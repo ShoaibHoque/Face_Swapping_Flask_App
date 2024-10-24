@@ -8,10 +8,17 @@ import random
 import os
 import dlib
 
-# adding path to config
-app.config['INITIAL_FILE_UPLOADS'] = 'static\uploads'
+# Ensure the 'uploads' directory exists
+upload_folder = os.path.join(app.root_path, 'static/uploads')
+if not os.path.exists(upload_folder):
+    os.makedirs(upload_folder)
 
-shape_predictor_68_face_landmarks = "static\dat\shape_predictor_68_face_landmarks.dat"
+app.config['INITIAL_FILE_UPLOADS'] = upload_folder
+
+shape_predictor_68_face_landmarks = os.path.join(app.root_path, 'static/dat/shape_predictor_68_face_landmarks.dat')
+
+predictor = dlib.shape_predictor(shape_predictor_68_face_landmarks)
+
 
 def get_array_img(img):
     image = Image.open(img)
@@ -71,7 +78,7 @@ def index():
         for face in faces:
             landmarks = predictor(img_gray, face)
             landmarks_points = []
-            for n in range(68):
+            for n in range(0,68):
                 x = landmarks.part(n).x
                 y = landmarks.part(n).y
                 landmarks_points.append((x,y))
@@ -115,7 +122,7 @@ def index():
             landmarks = predictor(img2_gray, face)
             landmarks_points2 = []
 
-            for n in range(68):
+            for n in range(0,68):
                 x = landmarks.part(n).x
                 y = landmarks.part(n).y
                 landmarks_points2.append((x,y))
